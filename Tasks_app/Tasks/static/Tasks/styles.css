@@ -1,0 +1,55 @@
+*{
+	font-family: consolas ;
+}
+
+
+#list{
+	list-style: none;
+}
+
+@keyframes delete{
+	0%{
+		opacity: 1;
+		height: 100%;
+		line-height: 100%;
+		padding: 5px;
+		margin-bottom: 10px;
+	}
+	75%{
+		opacity: 0;
+		height: 100%;
+		line-height: 100%;
+		padding: 5px;
+		margin-bottom: 10px;
+	}
+	100%{
+		opacity: 0;
+		height: 0px;
+		line-height: 0px;
+		padding: 0px;
+		margin-bottom: 0px;
+	}
+}
+
+#task_div{
+	background-color: grey;
+	border: 2px black solid;
+	margin-bottom: 10px;
+	padding: 5px;
+	animation-name: delete;
+	animation-duration: 2s;
+	animation-fill-mode: forwards;
+	animation-play-state: paused;
+}
+
+a{
+	text-decoration: none;
+	padding: 4px;
+	background-color: grey;
+	color: white;
+	border: 1px black solid;
+}
+
+a:hover{
+	color: orange;
+}
