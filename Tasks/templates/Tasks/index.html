@@ -7,50 +7,68 @@
 {% endblock %}
 
 {% block body %}
-	<div id="container">
-		<ul id="list">
-			{% for task in tasks %}
-			<div id="task_div" data-id="{{ task.id }}">
-				<li>{{ task.task_name }}</li>
-				<button id="mark_as_done_btn">Mark as Done</button>
-				<button class="delete_btn">Delete Task</button>
-				<button id="update_btn">Update Task</button>
+	<header>
+		<h1>Task List 2021</h1>
+		<form id="new-task-form" method="POST" action="{% url 'add' %}">
+			{% csrf_token %}
+			<input 
+				type="text" 
+				name="new-task-input" 
+				id="new-task-input" 
+				placeholder="What do you have planned?" />
+			<input 
+				type="submit"
+				id="new-task-submit" 
+				value="Add task" />
+		</form>
+	</header>
+	<main>
+		<section class="task-list">
+			<h2>Tasks</h2>
+
+			<div id="tasks">
+
+				{% for task in tasks %}
+				<div class="task" data-id="{{ task.id }}">
+					<div class="content">
+						<input 
+							type="text" 
+							class="text" 
+							value="{{ task.task_name }}"
+							readonly>
+					</div>
+					<div class="actions">
+						<button class="edit">Edit</button>
+						<button class="delete">Delete</button>
+					</div>
+				</div> 
+				{% empty %}
+				<h1>No tasks available</h1>
+				{% endfor %}
 			</div>
-			{% empty %}
-				<h1>There are no tasks available</h1>
-			{% endfor %}
-		</ul>
-
-		<button id="add_link">Add a new task</button>
-	</div>
-
-	<div id="add_task_section">
-	</div>
+		</section>
+	</main>
 
 
-	<div id="done_tasks">
-	</div>
 
 	{# javascript section #}
 	<script>
 		document.addEventListener("DOMContentLoaded", () => {
-			document.querySelector("#add_link").onclick = () => {
-				fetch("add")
-				.then(response => response.text())
-				.then(text => {
-					document.querySelector("#add_task_section").innerHTML = text;
-				});
-			};
-
 			// adding events to the delete button 
 			document.addEventListener('click', event => {
 				const element = event.target;
-				if (element.className === "delete_btn"){
-					const parentElement = element.parentElement;
+				if (element.className === "delete"){
+					const parentElement = element.parentElement.parentElement;
 					parentElement.style.animationPlayState = 'running';
 
+
+						//testing
+						console.log(`parent element dataset-id : ${parentElement.dataset.id}`)
+
+
+
 					//action on animation end
-					element.parentElement.addEventListener("animationend", () => {
+					parentElement.addEventListener("animationend", () => {
 						fetch(`delete/${parentElement.dataset.id}`)
 						.then(response => response.json())
 						.then(data => {
@@ -60,6 +78,7 @@
 							console.error('Error', error);
 						});
 
+						console.log(`deleted task : ${parentElement.dataset.id}`)
 						//remove parent element from the webpage
 						element.parentElement.remove();
 					});

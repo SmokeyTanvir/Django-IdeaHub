@@ -5,20 +5,25 @@ from django.urls import reverse
 
 # Create your views here.
 def index(request):
-	tasks = Task.objects.all()
-	return render(request, "Tasks/index.html", {
-		"tasks": tasks
-		})
-
-def add_task(request):
 	if request.method == 'POST':
-		task_name = request.POST.get("new_task")
+		task_name = request.POST.get("new-task-input")
+
+		#checking if task is empty
+		if len(task_name) == 0:
+			return render(request, "Tasks/index.html", {
+				'message' : 'Error...Task cannot be empty'
+				})
+
+		#if task is not empty
 		new_task = Task(task_name=task_name)
 		new_task.save()
 		return  HttpResponseRedirect(reverse("index"))
 
-	return render(request, "Tasks/add.html")
-
+		
+	tasks = Task.objects.all()
+	return render(request, "Tasks/index.html", {
+		"tasks": tasks
+		})
 
 def delete_task(request, taskID):
 	try: 
