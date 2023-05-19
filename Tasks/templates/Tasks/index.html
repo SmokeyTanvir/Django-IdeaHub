@@ -8,7 +8,7 @@
 
 {% block body %}
 	<header>
-		<h1>Task List 2021</h1>
+		<h1 align="center">Task List</h1>
 		<form id="new-task-form" method="POST" action="{% url 'add' %}">
 			{% csrf_token %}
 			<input 
