@@ -1,0 +1,87 @@
+{% extends "Opinions/layout.html" %}
+{% load static %}
+
+{% block head %}
+	<title>Your opinion doesn't matter</title>
+	<link href="{% static 'Stylesheets/styles.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block body %}
+	<header>
+		{% if opinion_added_message %}
+			<h1>{{ opinion_added_message }}</h1>
+		{% endif %}
+		<h1 align="center">Your Opinion Doesn't matter</h1>
+		<form id="new-opinion-form" method="POST" action="{% url 'index' %}">
+			{% csrf_token %}
+			<input 
+				type="text" 
+				name="new-opinion-input" 
+				id="new-opinion-input" 
+				placeholder="What is your opinion?" />
+			<input 
+				type="submit"
+				id="new-opinion-submit" 
+				value="Add opinion" />
+		</form>
+	</header>
+	<main>
+		<section class="opinion-list">
+			<h2>Opinions</h2>
+
+			<div id="opinions">
+
+				{% for opinion in opinions %}
+				{% if opinion.is_authorized %}
+				<div class="opinion" data-id="{{ opinion.id }}">
+					<div class="content">
+						<input 
+							type="text" 
+							class="text" 
+							value="{{ opinion.task_name }}"
+							readonly>
+					</div>
+					<div class="actions">
+						<button class="edit">Edit</button>
+						<button class="delete">Delete</button>
+					</div>
+				</div> 
+				{% endif %}
+				{% empty %}
+				<h1>No opinions available</h1>
+				{% endfor %}
+			</div>
+		</section>
+	</main>
+
+
+
+	{# javascript section #}
+	<script>
+		document.addEventListener("DOMContentLoaded", () => {
+			// adding events to the delete button 
+			document.addEventListener('click', event => {
+				const element = event.target;
+				if (element.className === "delete"){
+					const parentElement = element.parentElement.parentElement;
+					parentElement.style.animationPlayState = 'running';
+
+					//action on animation end
+					parentElement.addEventListener("animationend", () => {
+						fetch(`delete/${parentElement.dataset.id}`)
+						.then(response => response.json())
+						.then(data => {
+							console.log(data.message);
+						})
+						.catch(error => {
+							console.error('Error', error);
+						});
+
+						//remove parent element from the webpage
+						element.parentElement.remove();
+					});
+				}
+			});
+		});
+	</script>
+{% endblock %}
