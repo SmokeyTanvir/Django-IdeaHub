@@ -3,13 +3,16 @@
 
 {% block head %}
 	<title>Tasks</title>
-	<link href="{% static 'Tasks/styles.css' %}" rel="stylesheet">
+	<link href="{% static 'Stylesheets/styles.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block body %}
 	<header>
+		{% if task_added_message %}
+			<h1>{{ task_added_message }}</h1>
+		{% endif %}
 		<h1 align="center">Task List</h1>
-		<form id="new-task-form" method="POST" action="{% url 'add' %}">
+		<form id="new-task-form" method="POST" action="{% url 'index' %}">
 			{% csrf_token %}
 			<input 
 				type="text" 
@@ -29,6 +32,7 @@
 			<div id="tasks">
 
 				{% for task in tasks %}
+				{% if task.is_authorized %}
 				<div class="task" data-id="{{ task.id }}">
 					<div class="content">
 						<input 
@@ -42,6 +46,7 @@
 						<button class="delete">Delete</button>
 					</div>
 				</div> 
+				{% endif %}
 				{% empty %}
 				<h1>No tasks available</h1>
 				{% endfor %}
@@ -61,12 +66,6 @@
 					const parentElement = element.parentElement.parentElement;
 					parentElement.style.animationPlayState = 'running';
 
-
-						//testing
-						console.log(`parent element dataset-id : ${parentElement.dataset.id}`)
-
-
-
 					//action on animation end
 					parentElement.addEventListener("animationend", () => {
 						fetch(`delete/${parentElement.dataset.id}`)
@@ -78,7 +77,6 @@
 							console.error('Error', error);
 						});
 
-						console.log(`deleted task : ${parentElement.dataset.id}`)
 						//remove parent element from the webpage
 						element.parentElement.remove();
 					});
