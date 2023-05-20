@@ -16,7 +16,7 @@ def index(request):
             })
 
         # if task is not empty
-        new_opinion = Opinion(opinion=opinion_name)
+        new_opinion = Opinion(opinion=opinion_name, created_by=request.user)
         new_opinion.save()
 
         # Store a success message in the session

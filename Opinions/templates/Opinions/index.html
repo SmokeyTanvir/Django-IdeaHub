@@ -32,21 +32,25 @@
 			<div id="opinions">
 
 				{% for opinion in opinions %}
-				{% if opinion.is_authorized %}
+				{# {% if opinion.is_authorized %} #}
 				<div class="opinion" data-id="{{ opinion.id }}">
 					<div class="content">
 						<input 
 							type="text" 
 							class="text" 
-							value="{{ opinion.task_name }}"
+							value="{{ opinion.opinion }}"
 							readonly>
 					</div>
+					
+					{% if opinion.created_by == request.user %}
 					<div class="actions">
 						<button class="edit">Edit</button>
 						<button class="delete">Delete</button>
 					</div>
+					{% endif %}
+
 				</div> 
-				{% endif %}
+				{# {% endif %} #}
 				{% empty %}
 				<h1>No opinions available</h1>
 				{% endfor %}
